@@ -1,15 +1,15 @@
 <?php
 require 'vendor/autoload.php';
 session_start();
-$client = new MongoDB/Client("mongodb://localhost:27017");
-$users = $client->usersapp->users;
-
+try {
+    $client = new MongoDB\Client("mongodb://localhost:27017");
+    $users = $client->usersapp->users;
+} catch (Exception $e) {
+    die("MongoDB connection failed: " . $e->getMessage());
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    #$email = $_POST['email'];
-    #$password = password_hash($_POST['password'], password_default);
-
+    $email = $_POST['email'];
     $user = $users->findOne(['email'=>$email]);
-    #$exists = $users->findOne(['email'=>$email]);
     if ($user && password_verify($_POST['password'], $user['password'])) {
         $_SESSION['user'] = $user['_id'];
         header("Location: dashboard.php");
@@ -19,8 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
-<form mothod="POST">
+<form method="POST">
     Email: <input name="email" type="email" required><br>
     Password: <input name="password" type="password" required><br>
     <button type="submit">Log In</button>
