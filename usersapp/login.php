@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $users->findOne(['email'=>$email]);
     if ($user && password_verify($_POST['password'], $user['password'])) {
         $_SESSION['user'] = $user['_id'];
-        header("Location: dashboard.php");
+        header("Location: index.php");
         exit;
     } else {
         echo "Login failed for: {$user['email']}";
